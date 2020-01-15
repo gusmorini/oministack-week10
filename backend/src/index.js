@@ -5,7 +5,7 @@ const routes = require('./routes');
 const app = express();
 
 // conexão com o banco
-mongoose.connect('mongodb+srv://gusmorini:<opsopsadmin>@cluster0-pfmdr.mongodb.net/week10?retryWrites=true&w=majority', {
+mongoose.connect("mongodb+srv://gusmorini:Admin2009@cluster0-pfmdr.mongodb.net/week10?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
