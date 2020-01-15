@@ -1,9 +1,6 @@
-const express = require('express');
+const {Router} = require('express');
 
-const app = express();
-
-// habilita o json dentro do express
-app.use(express.json());
+const routes = Router();
 
 // Metodos HTTP: GET, POST, PUT, DELETE;
 // tipos parametros;
@@ -11,9 +8,9 @@ app.use(express.json());
 // Route Params:  req.params (identificação alteração ou remoção)
 // Body: req.body (Dados para criação ou alteração de registro)
 
-app.post('/users', (req, res) => {
+routes.post('/users', (req, res) => {
     console.log(req.body);
     return res.json({message: ' Hello OminiStack'});
 });
 
-app.listen(3333);
+module.exports = routes;
