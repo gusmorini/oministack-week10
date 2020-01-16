@@ -47,6 +47,16 @@ module.exports = {
 
         return res.json(dev);
         
-    } // store
+    },
+
+    async update(req, res){
+        return res.json({message: "update"});
+    },
+
+    async destroy(req, res){
+        return res.json({message: "destroy"});
+    },
+
+    
 
 };
