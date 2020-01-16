@@ -1,5 +1,6 @@
 const axios = require('axios');
 const Dev = require('../models/Dev');
+const parseStringAsArray = require('../utils/parseStringAsArray');
 
 // funcções do controller
 // index, show, store, update, destroy
@@ -25,9 +26,8 @@ module.exports = {
             const apiResponse = await axios.get(`https://api.github.com/users/${github_username}`);
             const {name = login, avatar_url, bio} = apiResponse.data;
             //{name = login} se o nome não existir ele utiliza o login
-        
-            //trim() remove os espaços antes e depois do array
-            const techsArray = techs.split(',').map(tech => tech.trim());
+
+            const techsArray = parseStringAsArray(techs);
         
             const location = {
                 type: 'Point',
