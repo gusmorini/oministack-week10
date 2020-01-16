@@ -7,7 +7,7 @@ const parseStringAsArray = require('../utils/parseStringAsArray');
 
 module.exports = {
 
-    async index (req, res) {
+    async index(req, res) {
 
         const devs = await Dev.find();
 
@@ -15,25 +15,25 @@ module.exports = {
 
     },
 
-    async store (req, res) {
-    
-        const {github_username, techs, latitude, longitude} = req.body;
+    async store(req, res) {
+
+        const { github_username, techs, latitude, longitude } = req.body;
 
         let dev = await Dev.findOne({ github_username });
 
         if (!dev) {
 
             const apiResponse = await axios.get(`https://api.github.com/users/${github_username}`);
-            const {name = login, avatar_url, bio} = apiResponse.data;
+            const { name = login, avatar_url, bio } = apiResponse.data;
             //{name = login} se o nome não existir ele utiliza o login
 
             const techsArray = parseStringAsArray(techs);
-        
+
             const location = {
                 type: 'Point',
                 coordinates: [longitude, latitude],
             }
-        
+
             dev = await Dev.create({
                 github_username,
                 name,
@@ -46,17 +46,38 @@ module.exports = {
         }
 
         return res.json(dev);
-        
+
     },
 
-    async update(req, res){
-        return res.json({message: "update"});
+    async update(req, res) {
+
+        // atualizar
+        // techs, name, avatar_url, bio, location
+
+        const { github_username, techs, latitude, longitude, name, avatar_url, bio } = req.body;
+
+        const techsArray = parseStringAsArray(techs);
+
+        const update = await Dev.findOneAndUpdate({ github_username }, {
+            techs: techsArray,
+            latitude,
+            longitude,
+            name,
+            avatar_url,
+            bio
+        });
+
+        return res.json(update);
     },
 
-    async destroy(req, res){
-        return res.json({message: "destroy"});
+    async destroy(req, res) {
+        const { github_username } = req.params;
+
+        const del = await Dev.findOneAndDelete({ github_username });
+
+        return res.json(del);
     },
 
-    
+
 
 };
