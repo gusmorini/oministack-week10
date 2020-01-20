@@ -4,7 +4,11 @@ import MapView, { Marker, Callout } from 'react-native-maps';
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
 
+import api from '../services/api';
+
 function Main({ navigation }) {
+
+    const [devs, setDevs] = useState([]);
 
     const [currentRegion, setCurrentRegion] = useState(null);
 
@@ -31,14 +35,43 @@ function Main({ navigation }) {
         loadInitiaPosition();
     }, []);
 
+    async function loadDevs() {
+        const { latitude, longitude } = currentRegion;
+        const response = await api.get('/search', {
+            params: {
+                latitude,
+                longitude,
+                techs: ''
+            }
+        });
+
+        console.log(response.data);
+
+        setDevs(response.data);
+
+    }
+
+    function handleRegionChanged(region) {
+        setCurrentRegion(region);
+    }
+
     if (!currentRegion) {
         return null;
     }
 
     return (
         <>
-            <MapView initialRegion={currentRegion} style={styles.map}>
-                <Marker coordinate={{ latitude: -23.6118947, longitude: -53.2068599 }}>
+            <MapView
+                onRegionChangeComplete={handleRegionChanged}
+                initialRegion={currentRegion}
+                style={styles.map}
+            >
+                <Marker
+                    coordinate={{
+                        latitude: -23.6118947,
+                        longitude: -53.2068599
+                    }}
+                >
                     <Image style={styles.avatar} source={{ uri: 'https://avatars3.githubusercontent.com/u/32224862?s=460&v=4' }}></Image>
                     <Callout onPress={() => {
                         //navegação
@@ -61,7 +94,7 @@ function Main({ navigation }) {
                     autoCorrect={false}
                 />
 
-                <TouchableOpacity onPress={() => { }} style={styles.loadButton}>
+                <TouchableOpacity onPress={loadDevs} style={styles.loadButton}>
                     <MaterialIcons name="my-location" size={20} color="#fff" />
                 </TouchableOpacity>
 
@@ -134,8 +167,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 3,
-        marginLeft: 5,
+        marginLeft: 10,
     }
 
 })
