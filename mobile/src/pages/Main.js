@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import MapView from 'react-native-maps';
+import { StyleSheet, Image, View, Text } from 'react-native';
+import MapView, { Marker, Callout } from 'react-native-maps';
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
 
 function Main() {
@@ -21,8 +21,8 @@ function Main() {
                 setCurrentRegion({
                     latitude,
                     longitude,
-                    latitudeDelta: 0.04,
-                    longitudeDelta: 0.04,
+                    latitudeDelta: 0.004,
+                    longitudeDelta: 0.004,
                 });
 
             }
@@ -35,16 +35,50 @@ function Main() {
     }
 
     return (
-        <MapView
-            initialRegion={currentRegion}
-            style={styles.map}
-        />
+        <MapView initialRegion={currentRegion} style={styles.map}>
+            <Marker coordinate={{ latitude: -23.6118947, longitude: -53.2068599 }}>
+                <Image style={styles.avatar} source={{ uri: 'https://avatars3.githubusercontent.com/u/32224862?s=460&v=4' }}></Image>
+                <Callout>
+                    <View style={styles.callout}>
+                        <Text style={styles.devName}>Gustavo Morini</Text>
+                        <Text style={styles.devBio}>bio ...</Text>
+                        <Text style={styles.devTechs}>ReactJS, Nodejs, PHP</Text>
+                    </View>
+                </Callout>
+            </Marker>
+        </MapView>
     );
 }
 
 const styles = StyleSheet.create({
     map: {
         flex: 1
+    },
+
+    avatar: {
+        width: 60,
+        height: 60,
+        borderRadius: 4,
+        borderWidth: 4,
+        borderColor: '#FFF'
+    },
+
+    callout: {
+        width: 260,
+    },
+
+    devName: {
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+
+    devBio: {
+        color: '#666',
+        marginTop: 5,
+    },
+
+    devTechs: {
+        marginTop: 5,
     }
 })
 
