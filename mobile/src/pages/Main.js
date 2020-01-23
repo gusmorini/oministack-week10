@@ -9,8 +9,10 @@ import api from '../services/api';
 function Main({ navigation }) {
 
     const [devs, setDevs] = useState([]);
-
     const [currentRegion, setCurrentRegion] = useState(null);
+    const [techs, setTechs] = useState('');
+
+
 
     useEffect(() => {
         async function loadInitiaPosition() {
@@ -26,8 +28,8 @@ function Main({ navigation }) {
                 setCurrentRegion({
                     latitude,
                     longitude,
-                    latitudeDelta: 0.004,
-                    longitudeDelta: 0.004,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
                 });
 
             }
@@ -41,14 +43,14 @@ function Main({ navigation }) {
             params: {
                 latitude,
                 longitude,
-                techs: 'php'
+                techs,
             }
         });
 
+
+        setDevs(response.data.devs);
+
         console.log(response.data);
-
-        setDevs(response.data);
-
     }
 
     function handleRegionChanged(region) {
@@ -66,24 +68,29 @@ function Main({ navigation }) {
                 initialRegion={currentRegion}
                 style={styles.map}
             >
-                <Marker
-                    coordinate={{
-                        latitude: -23.6118947,
-                        longitude: -53.2068599
-                    }}
-                >
-                    <Image style={styles.avatar} source={{ uri: 'https://avatars3.githubusercontent.com/u/32224862?s=460&v=4' }}></Image>
-                    <Callout onPress={() => {
-                        //navegação
-                        navigation.navigate('Profile', { github_username: 'gusmorini' });
-                    }}>
-                        <View style={styles.callout}>
-                            <Text style={styles.devName}>Gustavo Morini</Text>
-                            <Text style={styles.devBio}>bio ...</Text>
-                            <Text style={styles.devTechs}>ReactJS, Nodejs, PHP</Text>
-                        </View>
-                    </Callout>
-                </Marker>
+
+                {devs.map(dev => (
+                    <Marker
+                        key={dev._id}
+                        coordinate={{
+                            longitude: dev.location.coordinates[0],
+                            latitude: dev.location.coordinates[1],
+                        }}
+                    >
+                        <Image style={styles.avatar} source={{ uri: dev.avatar_url }}></Image>
+                        <Callout onPress={() => {
+                            //navegação
+                            navigation.navigate('Profile', { github_username: dev.github_username });
+                        }}>
+                            <View style={styles.callout}>
+                                <Text style={styles.devName}>{dev.name}</Text>
+                                <Text style={styles.devBio}>{dev.bio}</Text>
+                                <Text style={styles.devTechs}>{dev.techs.join(', ')}</Text>
+                            </View>
+                        </Callout>
+                    </Marker>
+                ))}
+
             </MapView>
             <View style={styles.searchForm}>
                 <TextInput
@@ -92,6 +99,8 @@ function Main({ navigation }) {
                     placeholderTextColor="#999"
                     autoCapitalize="words"
                     autoCorrect={false}
+                    value={techs}
+                    onChangeText={setTechs}
                 />
 
                 <TouchableOpacity onPress={loadDevs} style={styles.loadButton}>
