@@ -4,12 +4,12 @@ const parseStringAsArray = require('../utils/parseStringAsArray');
 
 module.exports = {
 
-    async index (req, res) {
+    async index(req, res) {
 
         //buscar todos os devs num raio de 10km
         //filtrar por tecnologias
 
-        const {latitude, longitude, techs} = req.query;
+        const { latitude, longitude, techs } = req.query;
 
         const techsArray = parseStringAsArray(techs);
 
@@ -26,6 +26,7 @@ module.exports = {
                     $maxDistance: 10000,
                 },
             },
+
         });
 
         return res.json({ devs });

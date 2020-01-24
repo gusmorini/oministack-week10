@@ -12,8 +12,8 @@ exports.setupWebsocket = (server) => {
 
         const { latitude, longitude, techs } = socket.handshake.query;
 
-        console.log(socket.id);
-        console.log(socket.handshake.query);
+        //console.log(socket.id);
+        //console.log(socket.handshake.query);
 
         connections.push({
             id: socket.id,
