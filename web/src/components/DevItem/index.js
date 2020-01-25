@@ -2,11 +2,12 @@ import React from 'react';
 
 import './styles.css';
 
-function DevItem({ dev, handleDeleteDev }) {
+function DevItem({ dev, handleDeleteDev, editDev }) {
 
     function deleteDev() {
         handleDeleteDev(dev.github_username);
     }
+
 
     return (
         <li className="dev-item">
@@ -29,6 +30,10 @@ function DevItem({ dev, handleDeleteDev }) {
 
             <p>{dev.bio}</p>
             <a href={`https://github.com/${dev.github_username}`}>Perfil do Github</a>
+
+            <br></br>
+            <a href="#" onClick={() => { editDev(dev) }}>editar</a>
+
         </li>
     );
 }

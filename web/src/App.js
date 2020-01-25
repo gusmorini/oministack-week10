@@ -13,6 +13,17 @@ function App() {
 
   const [devs, setDevs] = useState([]);
 
+  const [github_username, setGithubUsername] = useState('');
+  const [techs, setTechs] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+
+  const [title, setTitle] = useState('Cadastrar');
+  const [textButton, setTextButton] = useState('Salvar');
+  const [update, setUpdate] = useState(false);
+
+  const [devUpdate, setDevUpdate] = useState(null);
+
   useEffect(() => {
     async function loadDevs() {
       const response = await api.get('/devs');
@@ -26,24 +37,78 @@ function App() {
     setDevs([...devs, response.data]);
   }
 
+  async function handleUpdateDev(data) {
+
+    const { github_username, techs, longitude, latitude } = data;
+
+    const { name, avatar_url, bio } = devUpdate;
+
+    const update = {
+      github_username,
+      techs,
+      longitude,
+      latitude,
+      name,
+      avatar_url,
+      bio
+    }
+
+    await api.put('/devs', update);
+    setDevs([...devs]);
+
+    setDevUpdate(null);
+    setTitle('Cadastrar');
+    setTextButton('Salvar');
+    setUpdate(false);
+
+  }
+
   async function handleDeleteDev(data) {
     await api.delete(`/devs/${data}`);
     setDevs([...devs]);
   }
 
 
+  function editDev(data) {
+
+    setTitle('Editar Cadastro');
+    setTextButton('Atualizar');
+    setUpdate(true);
+    setGithubUsername(data.github_username);
+    setTechs(data.techs.join(', '));
+    setLatitude(data.latitude);
+    setLongitude(data.longitude);
+
+    setDevUpdate(data);
+
+  }
+
   return (
     <div id="app">
       <aside>
-        <strong>Cadastrar</strong>
-        <DevForm onSubmit={handleAddDev} />
+
+        <DevForm
+          handleAddDev={handleAddDev}
+          handleUpdateDev={handleUpdateDev}
+          title={title}
+          textButton={textButton}
+          update={update}
+          github_username={github_username}
+          setGithubUsername={setGithubUsername}
+          techs={techs}
+          setTechs={setTechs}
+          latitude={latitude}
+          setLatitude={setLatitude}
+          longitude={longitude}
+          setLongitude={setLongitude}
+        />
 
       </aside>
       <main>
         <ul>
 
           {devs.map(dev => (
-            <DevItem key={dev._id} dev={dev} handleDeleteDev={handleDeleteDev} />
+            <DevItem key={dev._id} dev={dev} handleDeleteDev={handleDeleteDev} editDev={editDev} />
           ))}
 
 
